@@ -17,10 +17,24 @@ https://github.com/python-telegram-bot/python-telegram-bot
 # Initial Setup
 * Open the bot in a text editor
 * Update your bot token 
-* Start your bot: `sudo python3 meshmeharderbot.py`
+* Start your bot: `python3 meshmeharderbot.py`
 * Write a message to your bot
 * Read out the telegram id from console
 * Insert your telegram id into LIST_OF_ADMINS
 
 # Basics
-Every message send from an admin gets forwarded to the meshtastic
+Every telegram message send from an admin gets forwarded to the meshtastic
+You can add the bot to a group and forward messages within the group with /forward <text>
+Messages which exceeds payload size gets stripped down automatically. 
+
+## FAQ/common problems
+
+This is a collection of common questions and answers from our friendly forum.
+
+### [Permission denied: ‘/dev/ttyUSB0’](https://meshtastic.discourse.group/t/question-on-permission-denied-dev-ttyusb0/590/3?u=geeksville)
+
+This indicates an OS permission problem for access by your user to the USB serial port.  Typically this is fixed by the following.
+
+```
+sudo usermod -a -G dialout <username>
+```
