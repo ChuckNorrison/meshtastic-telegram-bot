@@ -80,10 +80,11 @@ def show_command(update: Update, context: CallbackContext) -> None:
             if meshtastic_interface:
                 info = meshtastic_interface.showInfo()
                 nodes = meshtastic_interface.showNodes()
-                meshtastic_interface.close()
                 # update.message.reply_text(info)
                 # update.message.reply_text(nodes)
                 update.message.reply_text("info gets printed to console (fix me)")
+                meshtastic_interface.close()
+                meshtastic_interface = None
             else:
                 update.message.reply_text("Meshtastic interface is missing, try again later")
 
@@ -119,12 +120,14 @@ def check_and_forward(update: Update, context: CallbackContext) -> None:
                     except:
                         update.message.reply_text("Unexpected: Can not forward this message.")
                         meshtastic_interface.close()
+                        meshtastic_interface = None
 
                 else:
                     update.message.reply_text("You should give me a text to forward")
 
                 # close interface
                 meshtastic_interface.close()
+                meshtastic_interface = None
             else:
                 update.message.reply_text("Meshtastic interface is missing, try again later")
         else:
@@ -133,9 +136,9 @@ def check_and_forward(update: Update, context: CallbackContext) -> None:
 def connect_interface() -> None:
     try:
         meshtastic_interface = meshtastic.SerialInterface(meshtastic_serial)
-    except:
+    except Exception as e:
         meshtastic_interface = None
-        logger.error("Meshtastic interface is missing")
+        logger.error("Meshtastic interface is missing\n>> %s" % str(e))
     return meshtastic_interface
 
 def error(update: Update, context: CallbackContext) -> None:
