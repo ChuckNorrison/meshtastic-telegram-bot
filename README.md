@@ -35,6 +35,22 @@ This is a collection of common questions and answers from our friendly forum.
 
 This indicates an OS permission problem for access by your user to the USB serial port.  Typically this is fixed by the following.
 
+Some Linux commands to overcome this issue:
+  
+Method 1: Add your user to the group dialout
 ```
 sudo usermod -a -G dialout <username>
+```
+
+Method 2: Another try would be to take ownership of this interface
+```
+sudo su
+cd /dev
+chown <username> ttyUSB0
+exit
+```
+  
+Method 3: Last you can also start your telegram bot as root
+```
+sudo python3 meshmeharderbot.py
 ```
