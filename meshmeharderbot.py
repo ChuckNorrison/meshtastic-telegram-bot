@@ -96,23 +96,30 @@ def check_and_forward(update: Update, context: CallbackContext) -> None:
             meshtastic_interface = connect_interface()
 
             if meshtastic_interface:
-                # trim text to 280bytes
-                user_text = (update.message.text[:233] + '..') if len(update.message.text) > 233 else update.message.text
-
+                user_text = update.message.text
                 # sanitize text
                 if "/forward" in user_text:
                     user_text = user_text.replace("/forward","")
 
                 if len(user_text)>1:
                     user = update.effective_user
+                
                     if not user['first_name']:
-                        meshtastic_interface.sendText("%s: \n%s" % ("unknown", user_text))
-                        logger.info("forwarded message\n> %s: \n>> %s" % ("unknown", user_text))
+                        user_name = "unknown"
                     else:
-                        meshtastic_interface.sendText("%s: \n%s" % (user['first_name'], user_text))
-                        logger.info("forwarded message\n> %s: \n>> %s" % (user['first_name'], user_text))
+                        user_name = user['first_name']
 
-                    update.message.reply_text("SUCCESS: Message forwarded to your meshtastic!")
+                    max_length = 222-len(user_name)
+                    user_text = (update.message.text[:max_length] + '..') if len(update.message.text) > max_length else update.message.text
+
+                    try:
+                        meshtastic_interface.sendText("%s: \n%s" % (user_name, user_text))
+                        logger.info("forwarded message\n> %s: \n>> %s" % (user_name, user_text))
+                        update.message.reply_text("SUCCESS: Message forwarded to your meshtastic!")
+                    except:
+                        update.message.reply_text("Unexpected: Can not forward this message.")
+                        meshtastic_interface.close()
+
                 else:
                     update.message.reply_text("You should give me a text to forward")
 
