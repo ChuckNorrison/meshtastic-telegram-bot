@@ -117,8 +117,10 @@ def check_and_forward(update: Update, context: CallbackContext) -> None:
                         meshtastic_interface.sendText("%s: \n%s" % (user_name, user_text))
                         logger.info("forwarded message\n> %s: \n>> %s" % (user_name, user_text))
                         update.message.reply_text("SUCCESS: Message forwarded to your meshtastic!")
-                    except:
+                    except Exception as e:
                         update.message.reply_text("Unexpected: Can not forward this message.")
+                        logger.error("Unexpected: Can not forward this message.\n> %s: \n>> %s\nERROR:\n%s" 
+                                % (user_name, user_text, str(e)))
                         meshtastic_interface.close()
                         meshtastic_interface = None
 
