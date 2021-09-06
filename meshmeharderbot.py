@@ -144,6 +144,11 @@ def check_and_forward(update: Update, context: CallbackContext) -> None:
             update.message.reply_text("We can only forward text messages to meshtastic")
 
 def connect_interface() -> None:
+    global meshtastic_interface
+
+    if meshtastic_interface:
+        meshtastic_interface.close()
+
     try:
         meshtastic_interface = meshtastic.SerialInterface(meshtastic_serial)
     except Exception as e:
@@ -154,12 +159,7 @@ def connect_interface() -> None:
 def error(update: Update, context: CallbackContext) -> None:
     """Log the error and send a telegram message to notify the developer."""
     # Log the error before we do anything else, so we can see it even if something breaks.
-    global meshtastic_interface
-
     logger.error(msg="Exception while handling an update:", exc_info=context.error)
-    if meshtastic_interface:
-        meshtastic_interface.close()
-        meshtastic_interface = None
     return
 
 def main() -> None:
