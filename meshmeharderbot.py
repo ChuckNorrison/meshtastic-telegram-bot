@@ -80,9 +80,17 @@ def show_command(update: Update, context: CallbackContext) -> None:
             if meshtastic_interface:
                 info = meshtastic_interface.showInfo()
                 nodes = meshtastic_interface.showNodes()
-                # update.message.reply_text(info)
-                # update.message.reply_text(nodes)
-                update.message.reply_text("info gets printed to console (fix me)")
+
+                if info:
+                    print(info)
+                    update.message.reply_text(info)
+                if nodes:
+                    print(nodes)
+                    update.message.reply_text(nodes)
+
+                if not info and not nodes:
+                    update.message.reply_text("Cant show any informations here, sorry. Check your console.")
+
                 meshtastic_interface.close()
                 meshtastic_interface = None
             else:
@@ -146,7 +154,12 @@ def connect_interface() -> None:
 def error(update: Update, context: CallbackContext) -> None:
     """Log the error and send a telegram message to notify the developer."""
     # Log the error before we do anything else, so we can see it even if something breaks.
+    global meshtastic_interface
+
     logger.error(msg="Exception while handling an update:", exc_info=context.error)
+    if meshtastic_interface:
+        meshtastic_interface.close()
+        meshtastic_interface = None
     return
 
 def main() -> None:
