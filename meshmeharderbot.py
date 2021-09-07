@@ -20,7 +20,7 @@ bot.
 import logging
 
 # telegram
-from telegram import Update, ForceReply
+from telegram import Update, ForceReply, ChatAction
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 #meshtastic
@@ -75,6 +75,9 @@ def start(update: Update, context: CallbackContext) -> None:
 def show_command(update: Update, context: CallbackContext) -> None:
     if update.message:
         if update.message.text:
+            # fancy typing animation
+            update.message.chat.send_action(ChatAction.TYPING)
+            
             meshtastic_interface = connect_interface()   
 
             if meshtastic_interface:
@@ -100,6 +103,8 @@ def show_command(update: Update, context: CallbackContext) -> None:
 def check_and_forward(update: Update, context: CallbackContext) -> None:
     if update.message:
         if update.message.text and len(update.message.text) > 1:
+            # fancy typing animation
+            update.message.chat.send_action(ChatAction.TYPING)
 
             # open interface
             meshtastic_interface = connect_interface()
