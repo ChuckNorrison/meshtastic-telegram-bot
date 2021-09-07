@@ -77,7 +77,7 @@ def show_command(update: Update, context: CallbackContext) -> None:
         if update.message.text:
             # fancy typing animation
             update.message.chat.send_action(ChatAction.TYPING)
-            
+
             meshtastic_interface = connect_interface()   
 
             if meshtastic_interface:
@@ -94,6 +94,7 @@ def show_command(update: Update, context: CallbackContext) -> None:
                 if not info and not nodes:
                     update.message.reply_text("Cant show any informations here, sorry. Check your console.")
 
+                # close interface
                 meshtastic_interface.close()
                 meshtastic_interface = None
             else:
@@ -134,9 +135,6 @@ def check_and_forward(update: Update, context: CallbackContext) -> None:
                         update.message.reply_text("Unexpected: Can not forward this message.")
                         logger.error("Unexpected: Can not forward this message.\n> %s: \n>> %s\nERROR:\n%s" 
                                 % (user_name, user_text, str(e)))
-                        meshtastic_interface.close()
-                        meshtastic_interface = None
-
                 else:
                     update.message.reply_text("You should give me a text to forward")
 
@@ -157,7 +155,6 @@ def connect_interface() -> None:
     try:
         meshtastic_interface = meshtastic.SerialInterface(meshtastic_serial)
     except Exception as e:
-        meshtastic_interface = None
         logger.error("Meshtastic interface is missing\n>> %s" % str(e))
     return meshtastic_interface
 
